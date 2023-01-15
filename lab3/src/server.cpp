@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
     inet_pton(AF_INET, addr, &s_addr.sin_addr.s_addr);
 
     if (bind(lfd, (struct sockaddr *)&s_addr, sizeof(s_addr)) < 0) {
-        perror("bins()");
+        printf("failed to start fserver: %s:%d already in use\n", addr, port);
         exit(1);
     }
     if (listen(lfd, 200) < 0) {
@@ -142,24 +142,27 @@ std::vector<std::string> showFileList(char *path)
 bool checkValidPort(int port) {
     if (port <= 0 || port >= 65535) {
         return false;
-    } else {
-        std::string p = std::to_string(port);
-        Process process;
-        std::vector<char*> command_v;
-        command_v.push_back(const_cast<char*>("/usr/bin/netstat"));
-        command_v.push_back(const_cast<char*>("-anp"));
-        command_v.push_back(const_cast<char*>(" | "));
-        command_v.push_back(const_cast<char*>("grep"));
-        command_v.push_back(const_cast<char*>(p.c_str()));
-        char **command = &command_v[0];
-        int ret = process.exec(command[0], command, environ);
-        std::string output = process.getExecOutput();
-        // std::cout<<output<<std::endl;
-        if (output != "")
-            return false;
-        else
-            return true;
-    }
+    } 
+    // else {
+    //     std::string p = std::to_string(port);
+    //     Process process;
+    //     std::vector<char*> command_v;
+    //     command_v.push_back(const_cast<char*>("/usr/bin/env"));
+    //     command_v.push_back(const_cast<char*>("netstat"));
+    //     command_v.push_back(const_cast<char*>("-anp"));
+    //     command_v.push_back(const_cast<char*>("|"));
+    //     command_v.push_back(const_cast<char*>("/usr/bin/grep"));
+    //     command_v.push_back(const_cast<char*>(p.c_str()));
+    //     char **command = &command_v[0];
+    //     int ret = process.exec(command[0], command, environ, 0);
+    //     std::string output = process.getExecOutput();
+    //     std::cout<<output<<std::endl;
+    //     if (output != "")
+    //         return false;
+    //     else
+    //         return true;
+    // }
+    return true;
 }
 
 bool checkValidIp(char *ipStr) {
